@@ -1,4 +1,6 @@
+import time
 import numpy as np
+
 
 # Write a function that takes a 1d numpy array and computes its reverse vector
 # (last element becomes the first).
@@ -45,6 +47,27 @@ def normalize(m):
     return x_scaled
 
 
+# Given a matrix A ∈ Rnxm and a vector b ∈ Rm,
+# compute the euclidean distance between b and each row Ai ,: of A:
+def compute_distance_classic(matrix, vector):
+
+    distance = [0.] * matrix.shape[0]
+    # print(vector.shape[0], matrix.shape[0], distance)
+    for i in range(matrix.shape[0]):
+        for j in range(vector.shape[0]):
+            square = (matrix[i, j] - vector[j]) ** 2
+            distance[i] = distance[i] + square
+        distance[i] = distance[i] ** 0.5
+    # print(matrix, vector, distance)
+    return distance
+
+
+def compute_distance_numpy(matrix, vector):
+    distance = np.sqrt(np.power((matrix - vector[np.newaxis, :]), 2).sum(1))
+    # print(matrix, vector, distance)
+    return distance
+
+
 if __name__ == "__main__":
     a = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
     print(a)
@@ -85,3 +108,17 @@ if __name__ == "__main__":
 
     y6 = np.array([[0.35, -0.27, 0.56], [0.15, 0.65, 0.42], [0.73, -0.78, -0.08]])
     normalize(y6)
+
+    y7 = np.random.rand(100000, 30)
+    y8 = np.random.rand(100000, 30)
+    vector = np.random.rand(30)
+
+    start = time.time()
+    y9 = compute_distance_classic(y7, vector)
+    end = time.time()
+    print("Pythonic Euclidean distance, time: ", end - start)
+
+    start = time.time()
+    y10 = compute_distance_numpy(y8, vector)
+    end = time.time()
+    print("Numpythonic Euclidean distance, time: ", end - start)
